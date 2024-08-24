@@ -3,8 +3,21 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import numpy as np
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins. You can specify specific origins instead.
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, etc.). You can specify specific methods instead.
+    allow_headers=["*"],  # Allows all headers. You can specify specific headers instead.
+)
+
 
 # Load the CSV file once when the application starts
 try:
@@ -32,6 +45,7 @@ async def get_places(
     description: str = Query(None, title="Description", description="Description to match with features")
 ):
     try:
+        print(max_distance, max_duration, min_cost, max_cost, rating, description)
         filtered_df = df.copy()
         
         if max_distance is not None:
